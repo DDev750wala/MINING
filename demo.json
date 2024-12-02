@@ -1,0 +1,399 @@
+{
+    "decision_1": {
+        "prefix": "decision_1",
+        "body": [
+            "import pandas as pd",
+            "import numpy as np",
+            "import matplotlib.pyplot as plt",
+            "from sklearn.model_selection import train_test_split",
+            "from sklearn.tree import DecisionTreeClassifier",
+            "from sklearn import tree",
+            "from sklearn.metrics import confusion_matrix, accuracy_score, classification_report"
+        ],
+        "description": "Import libraries for Decision Tree Classifier"
+    },
+    "decision_2": {
+        "prefix": "decision_2",
+        "body": [
+            "# Step 1: Load the Dataset",
+            "def load_dataset():",
+            "    df = pd.read_csv('dataset.csv')",
+            "    print(\"__________Dataset Information____________\")",
+            "    print(\"Dataset Length: \", len(df))",
+            "    print(\"Dataset Shape: \", df.shape, \"\\n\")",
+            "    return df"
+        ],
+        "description": "Define function to load the dataset"
+    },
+    "decision_3": {
+        "prefix": "decision_3",
+        "body": [
+            "# Step 2: Preprocess the Data",
+            "def preprocess_data(df):",
+            "    for col in df.columns:",
+            "        if col not in ['Pregnancies', 'Outcome']:",
+            "            if df[col].dtype in ['int64', 'float64']:",
+            "                mean_value = df[col].mean()",
+            "                if df[col].dtype == 'int64':",
+            "                    df[col] = df[col].replace(0, int(mean_value))",
+            "                else:",
+            "                    df[col] = df[col].replace(0, round(mean_value, 2))",
+            "    return df"
+        ],
+        "description": "Define function to preprocess the dataset"
+    },
+    "decision_4": {
+        "prefix": "decision_4",
+        "body": [
+            "# Step 3: Split the Dataset",
+            "def split_dataset(df):",
+            "    X = df.iloc[:, :-1].values",
+            "    Y = df.iloc[:, -1].values",
+            "    # 80-20 split",
+            "    X_train1, X_test1, Y_train1, Y_test1 = train_test_split(X, Y, test_size=0.2, random_state=100)",
+            "    # 70-30 split",
+            "    X_train2, X_test2, Y_train2, Y_test2 = train_test_split(X, Y, test_size=0.3, random_state=100)",
+            "    return X_train1, X_test1, Y_train1, Y_test1, X_train2, X_test2, Y_train2, Y_test2"
+        ],
+        "description": "Define function to split the dataset into training and testing"
+    },
+    "decision_5": {
+        "prefix": "decision_5",
+        "body": [
+            "# Step 4: Train the Decision Tree Classifier",
+            "def train_model(X_train, Y_train):",
+            "    clf_entropy = DecisionTreeClassifier(",
+            "        criterion=\"entropy\",",
+            "        max_depth=4,",
+            "        random_state=100,",
+            "        min_samples_leaf=5",
+            "    )",
+            "    clf_entropy.fit(X_train, Y_train)",
+            "    return clf_entropy"
+        ],
+        "description": "Define function to train the decision tree classifier"
+    },
+    "decision_6": {
+        "prefix": "decision_6",
+        "body": [
+            "# Step 5: Plot the Decision Tree",
+            "def plot_decision_tree(clf_model, features, class_labels, tree_number):",
+            "    plt.figure(figsize=(20, 10))",
+            "    tree.plot_tree(",
+            "        clf_model,",
+            "        filled=True,",
+            "        feature_names=features,",
+            "        class_names=class_labels,",
+            "        rounded=True",
+            "    )",
+            "    plt.savefig(f'tree{tree_number}.png', dpi=300, bbox_inches='tight')",
+            "    plt.show()"
+        ],
+        "description": "Define function to plot the decision tree"
+    },
+    "decision_7": {
+        "prefix": "decision_7",
+        "body": [
+            "# Step 6: Evaluate the Model",
+            "def cal_accuracy(y_test, y_pred):",
+            "    cm = confusion_matrix(y_test, y_pred)",
+            "    print(\"Confusion Matrix: \\n\")",
+            "    for row in cm:",
+            "        print(row)",
+            "    accuracy = accuracy_score(y_test, y_pred) * 100",
+            "    print(f\"Accuracy: {accuracy:.2f}%\")",
+            "    report = classification_report(y_test, y_pred)",
+            "    print(\"Classification Report: \\n\", report)"
+        ],
+        "description": "Define function to evaluate the decision tree model"
+    },
+    "decision_8": {
+        "prefix": "decision_8",
+        "body": [
+            "# Step 7: Main Function",
+            "if __name__ == \"__main__\":",
+            "    # Load and preprocess the dataset",
+            "    df = load_dataset()",
+            "    df = preprocess_data(df)",
+            "    ",
+            "    # Split the dataset",
+            "    X_train1, X_test1, Y_train1, Y_test1, X_train2, X_test2, Y_train2, Y_test2 = split_dataset(df)",
+            "    ",
+            "    # Train the models",
+            "    model1 = train_model(X_train1, Y_train1)",
+            "    model2 = train_model(X_train2, Y_train2)",
+            "    ",
+            "    # Prepare for plotting",
+            "    feature_names = df.columns[:-1].tolist()",
+            "    class_labels = df['Outcome'].unique().astype(str).tolist()",
+            "    ",
+            "    # Predict and evaluate model 1",
+            "    Y_pred1 = model1.predict(X_test1)",
+            "    print(\"********************************************************************\")",
+            "    print(\"Metrics for 80-20 Train-Test Split:\")",
+            "    print(\"____________________________________________________________________\")",
+            "    # Plot decision trees",
+            "    plot_decision_tree(model1, feature_names, class_labels, tree_number=1)",
+            "    cal_accuracy(Y_test1, Y_pred1)",
+            "    ",
+            "    # Predict and evaluate model 2",
+            "    Y_pred2 = model2.predict(X_test2)",
+            "    print(\"********************************************************************\")",
+            "    print(\"\\nMetrics for 70-30 Train-Test Split:\")",
+            "    print(\"____________________________________________________________________\")",
+            "    # Plot decision trees",
+            "    plot_decision_tree(model2, feature_names, class_labels, tree_number=2)",
+            "    cal_accuracy(Y_test2, Y_pred2)"
+        ],
+        "description": "Main function to execute all steps"
+    },
+    "apriori_1": {
+        "prefix": "apriori_1",
+        "body": [
+            "import pandas as pd",
+            "",
+            "def generate_candidates(frequent_itemsets, k):",
+            "    \"\"\"Generates candidate itemsets of size k from frequent itemsets of size k-1.\"\"\"",
+            "    candidates = set()",
+            "    for i in range(len(frequent_itemsets)):",
+            "        for j in range(i + 1, len(frequent_itemsets)):",
+            "            itemset1 = frequent_itemsets[i]",
+            "            itemset2 = frequent_itemsets[j]",
+            "            union_itemset = tuple(sorted(set(itemset1) | set(itemset2)))",
+            "            if len(union_itemset) >= k:",
+            "                candidates.add(union_itemset)",
+            "    return list(candidates)"
+        ],
+        "description": "Generate candidate itemsets for Apriori"
+    },
+    "apriori_2": {
+        "prefix": "apriori_2",
+        "body": [
+            "def calculate_support(transactions, itemset, total_transactions):",
+            "    \"\"\"Calculates the support of an itemset in a set of transactions.\"\"\"",
+            "    count = 0",
+            "    for transaction in transactions:",
+            "        if set(itemset).issubset(set(transaction)):",
+            "            count += 1",
+            "    return (count / total_transactions) * 100"
+        ],
+        "description": "Calculate support of itemsets"
+    },
+    "apriori_3": {
+        "prefix": "apriori_3",
+        "body": [
+            "def apriori(transactions, min_support):",
+            "    \"\"\"Implements the Apriori algorithm to find frequent itemsets.\"\"\"",
+            "    total_transactions = len(transactions)",
+            "    frequent_itemsets = {}",
+            "    item_counts = {}",
+            "",
+            "    # Find frequent 1-itemsets",
+            "    for transaction in transactions:",
+            "        for item in transaction:",
+            "            if item not in item_counts:",
+            "                item_counts[item] = 0",
+            "            item_counts[item] += 1",
+            "",
+            "    frequent_1_itemsets = [",
+            "        (item,) for item, count in item_counts.items()",
+            "        if (count / total_transactions) * 100 >= min_support",
+            "    ]",
+            "    frequent_itemsets[1] = frequent_1_itemsets",
+            "    k = 2"
+        ],
+        "description": "Apriori algorithm initial steps"
+    },
+    "apriori_4": {
+        "prefix": "apriori_4",
+        "body": [
+            "    while frequent_itemsets.get(k - 1):",
+            "        candidates = generate_candidates(frequent_itemsets[k - 1], k)",
+            "        frequent_k_itemsets = []",
+            "        for candidate in candidates:",
+            "            support = calculate_support(transactions, candidate, total_transactions)",
+            "            if support >= min_support:",
+            "                frequent_k_itemsets.append(candidate)",
+            "        if frequent_k_itemsets:",
+            "            frequent_itemsets[k] = frequent_k_itemsets",
+            "        k += 1",
+            "",
+            "    return frequent_itemsets"
+        ],
+        "description": "Iterative generation of frequent itemsets in Apriori"
+    },
+    "apriori_5": {
+        "prefix": "apriori_5",
+        "body": [
+            "if __name__ == \"__main__\":",
+            "    data = pd.read_csv('retail.csv')",
+            "    transactions = []",
+            "",
+            "    for col in data:",
+            "        for val in data[col].values:",
+            "            transactions.append(str(val).split())",
+            "",
+            "    min_support = 10  # Minimum support threshold (in percentage)",
+            "    frequent_itemsets = apriori(transactions, min_support)",
+            "",
+            "    print(\"Frequent Itemsets:\")",
+            "    for k, itemsets in frequent_itemsets.items():",
+            "        for itemset in itemsets:",
+            "            support = calculate_support(transactions, itemset, len(transactions))",
+            "            print(f\"{itemset}: {support:.2f}%\")"
+        ],
+        "description": "Main function to execute Apriori algorithm"
+    },
+    "kmeans1": {
+        "prefix": "kmeans1",
+        "body": [
+            "import pandas as pd",
+            "import numpy as np",
+            "from sklearn.preprocessing import StandardScaler",
+            "from sklearn.cluster import KMeans",
+            "from sklearn.metrics import silhouette_score",
+            "import matplotlib.pyplot as plt",
+            "import seaborn as sns"
+        ],
+        "description": "Import necessary libraries"
+    },
+    "kmeans2": {
+        "prefix": "kmeans2",
+        "body": [
+            "# Load the dataset",
+            "df = pd.read_csv('/content/wine-clustering.csv')",
+            "print(df.head())",
+            "print(df.info())",
+            "print(df.isnull().sum())",
+            "print(df.describe())"
+        ],
+        "description": "Load and inspect the dataset"
+    },
+    "kmeans3": {
+        "prefix": "kmeans3",
+        "body": [
+            "# Normalization",
+            "df1 = df.copy()",
+            "for column in df1.columns:",
+            "    df1[column] = (df1[column] - df1[column].min()) / (df1[column].max() - df1[column].min())",
+            "print(df1.head())"
+        ],
+        "description": "Normalize the dataset"
+    },
+    "kmeans4": {
+        "prefix": "kmeans4",
+        "body": [
+            "# K-means Clustering",
+            "# Elbow method to find optimal K",
+            "wcss = []",
+            "for k in range(1, 11):",
+            "    kmeans = KMeans(n_clusters=k, init='k-means++', random_state=42)",
+            "    kmeans.fit(df1)",
+            "    wcss.append(kmeans.inertia_)",
+            "",
+            "plt.plot(range(1, 11), wcss)",
+            "plt.title(\"The Elbow Method\")",
+            "plt.xlabel(\"Number of clusters\")",
+            "plt.ylabel(\"WCSS\")",
+            "plt.show()"
+        ],
+        "description": "Use the elbow method to find the optimal number of clusters"
+    },
+    "kmeans5": {
+        "prefix": "kmeans5",
+        "body": [
+            "# Apply KMeans with the optimal number of clusters",
+            "kmeans = KMeans(n_clusters=3, init='k-means++', random_state=42)",
+            "clusters = kmeans.fit_predict(df1)",
+            "df1['Cluster'] = clusters"
+        ],
+        "description": "Apply KMeans clustering"
+    },
+    "kmeans6": {
+        "prefix": "kmeans6",
+        "body": [
+            "# Silhouette Score",
+            "silhouette_avg = silhouette_score(df1, clusters)",
+            "print(\"Silhouette Score:\", silhouette_avg)"
+        ],
+        "description": "Calculate and display the silhouette score"
+    },
+    "kmeans7": {
+        "prefix": "kmeans7",
+        "body": [
+            "# Pairplot for clusters",
+            "sns.pairplot(df1, hue='Cluster', palette='viridis')",
+            "plt.suptitle('Wine Clusters')",
+            "plt.show()"
+        ],
+        "description": "Generate pairplot for clusters"
+    },
+    "kmeans8": {
+        "prefix": "kmeans8",
+        "body": [
+            "# Scatter plot of Alcohol vs Malic Acid",
+            "plt.scatter(df1['Alcohol'], df1['Malic_Acid'])",
+            "plt.xlabel('Alcohol')",
+            "plt.ylabel('Malic_Acid')",
+            "plt.show()"
+        ],
+        "description": "Create a scatter plot for Alcohol vs Malic Acid"
+    },
+    "kmeans9": {
+        "prefix": "kmeans9",
+        "body": [
+            "# Scatter plot using KMeans",
+            "kmeans = KMeans(n_clusters=3, init='k-means++', random_state=42)",
+            "y_labels = kmeans.fit_predict(df1)",
+            "plt.scatter(df1.iloc[:, 0], df1.iloc[:, 1], c=y_labels)",
+            "plt.title(\"Scatter plot with KMeans\")",
+            "plt.show()"
+        ],
+        "description": "Scatter plot with KMeans predictions"
+    },
+    "kmeans10": {
+        "prefix": "kmeans10",
+        "body": [
+            "# Silhouette Coefficient for different number of clusters",
+            "silhouette_coefficients = []",
+            "for k in range(2, 11):",
+            "    kmeans = KMeans(n_clusters=k, init='k-means++', random_state=42)",
+            "    kmeans.fit(df1)",
+            "    score = silhouette_score(df1, kmeans.labels_)",
+            "    silhouette_coefficients.append(score)",
+            "",
+            "# Plot the silhouette scores",
+            "plt.plot(range(2, 11), silhouette_coefficients)",
+            "plt.xticks(range(2, 11))",
+            "plt.xlabel('Number Of Clusters')",
+            "plt.ylabel('Silhouette Coefficient')",
+            "plt.title(\"Silhouette Coefficients for Different Clusters\")",
+            "plt.show()"
+        ],
+        "description": "Compute and plot silhouette coefficients for different clusters"
+    },
+    "kmeans11": {
+        "prefix": "kmeans11",
+        "body": [
+            "# Display cluster means",
+            "cluster_means = df1.groupby('Cluster').mean()",
+            "print(cluster_means)"
+        ],
+        "description": "Display mean values of clusters"
+    },
+    "kmeans12": {
+        "prefix": "kmeans12",
+        "body": [
+            "# Scatter plot of Alcohol vs Malic Acid with clustering",
+            "X = df1.loc[:, ['Alcohol', 'Malic_Acid']]",
+            "kmeans = KMeans(n_clusters=3, init='k-means++', random_state=42)",
+            "y_labels = kmeans.fit(X)",
+            "plt.scatter(X.iloc[:, 0], X.iloc[:, 1], c=y_labels.labels_)",
+            "plt.xlabel('Alcohol')",
+            "plt.ylabel('Malic_Acid')",
+            "plt.title(\"Alcohol vs Malic Acid Clusters\")",
+            "plt.show()"
+        ],
+        "description": "Create scatter plot for Alcohol vs Malic Acid with clusters"
+    }
+}
